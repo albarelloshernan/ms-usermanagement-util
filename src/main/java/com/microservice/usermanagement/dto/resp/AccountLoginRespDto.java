@@ -1,17 +1,19 @@
 package com.microservice.usermanagement.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.microservice.usermanagement.model.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountRespDto {
+public class AccountLoginRespDto {
 
     @Schema(description = "Id del usuario.")
     private Integer id;
@@ -29,4 +31,16 @@ public class AccountRespDto {
 
     @Schema(description = "Indica si el usuario sigue habilitado dentro del sistema.")
     private boolean isActive;
+
+    @Schema(description = "Nombre de usuario.")
+    private String name;
+
+    @Schema(description = "Email del usuario.")
+    private String email;
+
+    @Schema(description = "Contraseña.")
+    private String password;
+
+    @Schema(description = "Teléfonos del usuario.")
+    private List<Phone> phones;
 }

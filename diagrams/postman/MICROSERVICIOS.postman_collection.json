@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "381eec5d-2b22-494f-b75f-e07d63dc2f88",
+		"name": "MICROSERVICIOS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22655907"
+	},
+	"item": [
+		{
+			"name": "sign-up",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"sub\": \"hernan@gmail.com\",\r\n  \"password\": \"a2asfGfdfdf4\",\r\n  \"iat\": 1680897181,\r\n  \"exp\": 1680900781\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "secret",
+							"value": "ultraSecretKeyPlus69",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Probador\",\r\n    \"email\": \"probador@gmail.com\",\r\n    \"password\": \"a2asfGfdfdf4\",\r\n    \"phones\": [\r\n        {\r\n            \"number\": 1166778899,\r\n            \"cityCode\": 9,\r\n            \"countryCode\": \"+54\"\r\n        }\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{L8080}}/ms-user-management/sign-up",
+					"host": [
+						"{{L8080}}"
+					],
+					"path": [
+						"ms-user-management",
+						"sign-up"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "sign-up ok",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Probador\",\r\n    \"email\": \"probador@gmail.com\",\r\n    \"password\": \"a2asfGfdfdf4\",\r\n    \"phones\": [\r\n        {\r\n            \"number\": 1166778899,\r\n            \"cityCode\": 9,\r\n            \"countryCode\": \"+54\"\r\n        }\r\n    ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{L8080}}/ms-user-management/sign-up",
+							"host": [
+								"{{L8080}}"
+							],
+							"path": [
+								"ms-user-management",
+								"sign-up"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Apr 2023 17:15:45 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"created\": \"2023-04-09T17:15:45.501\",\n    \"lastLogin\": \"2023-04-09T17:15:45.501\",\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYWRvckBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImEyYXNmR2ZkZmRmNCIsImlhdCI6MTY4MTA2MDU0NSwiZXhwIjoxNjgxMDY0MTQ1fQ.WRRAbFR5_Wz60hPzkGtyyMSStMPH058IdRB3mnq_6d0\",\n    \"active\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYWRvckBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImEyYXNmR2ZkZmRmNCIsImlhdCI6MTY4MTA1MjAwMiwiZXhwIjoxNjgxMDU1NjAyfQ.5m6ZPqmIzl_qD1aRWG4HVOh0yX-FKYQOA5VTSDrOucs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{L8080}}/ms-user-management/login?sub=probador@gmail.com&password=a2asfGfdfdf4",
+					"host": [
+						"{{L8080}}"
+					],
+					"path": [
+						"ms-user-management",
+						"login"
+					],
+					"query": [
+						{
+							"key": "sub",
+							"value": "probador@gmail.com"
+						},
+						{
+							"key": "password",
+							"value": "a2asfGfdfdf4"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "login error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{L8080}}/ms-user-management/login?sub=probador@gmail.com&password=a2asfGfdfdf4",
+							"host": [
+								"{{L8080}}"
+							],
+							"path": [
+								"ms-user-management",
+								"login"
+							],
+							"query": [
+								{
+									"key": "sub",
+									"value": "probador@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "a2asfGfdfdf4"
+								}
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "109"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Apr 2023 14:53:42 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": [\n        {\n            \"codigo\": 422,\n            \"detail\": \"Wrong username or password.\",\n            \"timestamp\": \"2023-04-09T11:53:42.605593900\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "login ok",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{L8080}}/ms-user-management/login?sub=probador@gmail.com&password=a2asfGfdfdf4",
+							"host": [
+								"{{L8080}}"
+							],
+							"path": [
+								"ms-user-management",
+								"login"
+							],
+							"query": [
+								{
+									"key": "sub",
+									"value": "probador@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "a2asfGfdfdf4"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 09 Apr 2023 17:16:00 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"created\": \"2023-04-09T17:15:45.501\",\n    \"lastLogin\": \"2023-04-09T17:16:00.576\",\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYWRvckBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImEyYXNmR2ZkZmRmNCIsImlhdCI6MTY4MTA2MDU2MCwiZXhwIjoxNjgxMDY0MTYwfQ.8feq-0j-lJHRBqdE2pICfgE8n-F_4jqby1-fosDAifI\",\n    \"name\": \"Probador\",\n    \"email\": \"probador@gmail.com\",\n    \"password\": \"$2a$12$hpMSG72NrrRg.0lujZvDWORkW3k9YUMcOp7bUtxgoxs9WZiIhPJcC\",\n    \"phones\": [],\n    \"active\": true\n}"
+				}
+			]
+		}
+	]
+}
