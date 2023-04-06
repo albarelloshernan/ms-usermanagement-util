@@ -74,7 +74,7 @@ public class TestUtils {
         List<UserPhones> usrPhonesList = new ArrayList<>();
         User user = new User();
         user.setUserId(userId);
-        user.setName(name);
+        user.setUsername(name);
         user.setEmail(email);
         user.setPassword(password);
         usrPhones.setPhone(number);
@@ -89,7 +89,7 @@ public class TestUtils {
         List<UserPhones> usrPhonesList = new ArrayList<>();
         User user = new User();
         user.setUserId(userId);
-        user.setName(name);
+        user.setUsername(name);
         user.setEmail(email);
         user.setPassword(password);
         usrPhones.setPhone(number);

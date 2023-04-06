@@ -28,7 +28,7 @@ public class AccountEntityConverter implements Converter<User, AccountRespDto>{
         dto.setCreated(entity.getCreatedAt());
         dto.setLastLogin(entity.getLastLogin());
         dto.setActive(entity.isActive());
-        dto.setToken(null);
+        dto.setToken(entity.getJwtToken());
         return dto;
     }
 }

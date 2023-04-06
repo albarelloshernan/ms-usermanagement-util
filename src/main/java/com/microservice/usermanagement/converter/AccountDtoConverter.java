@@ -19,7 +19,7 @@ public final class AccountDtoConverter implements Converter<User, AccountReqDto>
             return null;
         }
         User entity = new User();
-        entity.setName(dto.getName());
+        entity.setUsername(dto.getName());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
         entity.setUserPhones(AccountUsrPhonesConverter.getInstance().fromDto(dto.getPhones()));
@@ -33,7 +33,7 @@ public final class AccountDtoConverter implements Converter<User, AccountReqDto>
             return null;
         }
         AccountReqDto dto = new AccountReqDto();
-        dto.setName(entity.getName());
+        dto.setName(entity.getUsername());
         dto.setEmail(entity.getEmail());
         dto.setPassword(entity.getPassword());
         dto.setPhones(AccountUsrPhonesConverter.getInstance().fromEntity(entity.getUserPhones()));
