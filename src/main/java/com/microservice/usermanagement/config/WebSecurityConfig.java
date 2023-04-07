@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/sign-up").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()).httpBasic(withDefaults())
+                .anyRequest().authenticated()).httpBasic(withDefaults()).csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
