@@ -12,6 +12,7 @@ import com.microservice.usermanagement.repository.AccountRepository;
 import com.microservice.usermanagement.security.JwtTokenProvider;
 import com.microservice.usermanagement.service.AccountService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     @Autowired
@@ -34,18 +38,11 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public AccountServiceImpl(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
-                              AuthenticationManager authenticationManager) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-    }
-
     @Override
     @Transactional
     public AccountRespDto signUp(AccountReqDto accountReqDto) {
         AccountRespDto response;
-        User userEntity;
+        User userEntity = new User();
         String jwtToken;
         if(!accountRepository.existsByUsername(accountReqDto.getName())) {
             jwtToken = jwtTokenProvider.createToken(accountReqDto.getEmail(),accountReqDto.getPassword());
@@ -62,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
         if (!foundUser.isPresent()) {
             throw new CustomException("Usuario no encontrado.", HttpStatus.NOT_FOUND);
         }
-        response = AccountRespEntityConverter.getInstance().fromEntity(foundUser.get());
+        response = AccountRespEntityConverter.getInstance().fromEntity(userEntity);
         return response;
     }
 
@@ -70,18 +67,22 @@ public class AccountServiceImpl implements AccountService {
         AccountLoginRespDto accountLoginRespDto;
         String parsedToken = jwtTokenProvider.resolveToken(jwtToken);
         String subject = jwtTokenProvider.getUsername(parsedToken);
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password));
+        } catch (AuthenticationException e) {
+            throw new CustomException("Invalid username/password supplied: " + e.getMessage(),
+                    HttpStatus.UNPROCESSABLE_ENTITY);
+        }
         Optional<User> optionalUser = accountRepository.findOneByEmail(subject);
         if(optionalUser.isPresent()) {
+            optionalUser.get().setJwtToken(jwtTokenProvider.createToken(username, password));
+            optionalUser.get().setLastLogin(Date.from(Instant.now()));
+            accountRepository.saveAndFlush(optionalUser.get());
             accountLoginRespDto = AccountLoginRespEntityConverter.getInstance().fromEntity(optionalUser.get());
         } else {
             throw new CustomException("User not found.", HttpStatus.NOT_FOUND);
         }
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            jwtTokenProvider.createToken(username, password);
-            return accountLoginRespDto;
-        } catch (AuthenticationException e) {
-            throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        return accountLoginRespDto;
     }
 }

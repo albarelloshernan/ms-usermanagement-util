@@ -36,6 +36,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/ms-user-management/sign-up").permitAll()
                 .requestMatchers("/ms-user-management/login").permitAll()
+                .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()).httpBasic(withDefaults()).csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
