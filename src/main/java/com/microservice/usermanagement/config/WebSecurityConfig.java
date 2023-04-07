@@ -34,9 +34,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/sign-up").permitAll()
-                .requestMatchers("/login").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/ms-user-management/sign-up").permitAll()
+                .requestMatchers("/ms-user-management/login").permitAll()
                 .anyRequest().authenticated()).httpBasic(withDefaults()).csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
@@ -44,13 +43,6 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers("/swagger-resources/**")
-                .requestMatchers("/swagger-ui.html")
-                .requestMatchers("/configuration/**")
-                .requestMatchers("/webjars/**")
-                .requestMatchers("/public")
-                .and()
-                .ignoring()
-                .requestMatchers("/h2-console/**");
+                .requestMatchers("/**");
     }
 }

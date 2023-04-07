@@ -34,9 +34,13 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountRespDto signUp(AccountReqDto dto) {
         AccountRespDto response;
+        User userEntity = new User();
+        String jwtToken;
         if(!accountRepository.existsByUsername(dto.getName())) {
-            jwtTokenProvider.createToken(dto.getName());
-            this.accountRepository.save(AccountDtoConverter.getInstance().fromDto(dto));
+            jwtToken = jwtTokenProvider.createToken(dto.getName());
+            userEntity = AccountDtoConverter.getInstance().fromDto(dto);
+            userEntity.setJwtToken(jwtToken);
+            this.accountRepository.save(userEntity);
         }
         Optional<User> foundUser = this.accountRepository.findOneByEmail(dto.getEmail());
         if (!foundUser.isPresent()) {
