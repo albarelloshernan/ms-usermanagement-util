@@ -39,20 +39,8 @@ public class TestUtils {
         }
     }
 
-    public static String token = "eyJhbGciOiJIUzI1NiJ9.eyJhdXRoX3RpbWUiOjE2NzM0NDcxMzMsImp0aSI6Ijg2" +
-            "ZThhNTJlLWI0OGYtNGNkNS04YmYzLTI1ZjA2MGNlMTc4ZCIsImlzcyI6Imh0dHBzOi8vdGVzdC1sb2dpbi5jbG" +
-            "Fyby5jb20uYXIvYXV0aC9yZWFsbXMvY2xhcm8iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZjp1bXMtYXI6ZGEx" +
-            "OGFiNGQtYmUxYi00YTdhLThjY2UtZjcxMjU4ZDA5ZGEzIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiMDE5ZTIyYz" +
-            "EiLCJub25jZSI6IjAwYTU2MWMzNzgwZThkN2JiM2NmZGIyZDk3ZWJmOWFiIiwic2Vzc2lvbl9zdGF0ZSI6Ijdm" +
-            "NWViOTE3LWI5ZDgtNDA0My1iZTZmLWU4MmZlODBjZWZmYyIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZm" +
-            "ZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6" +
-            "eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl" +
-            "19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBjbGFyb19wcm9maWxlIGVtYWlsIiwic2lkIjoiN2Y1ZWI5MTct" +
-            "YjlkOC00MDQzLWJlNmYtZTgyZmU4MGNlZmZjIiwiZ2xvYmFsX3VzZXJfaWQiOiJkYTE4YWI0ZC1iZTFiLTRhN2" +
-            "EtOGNjZS1mNzEyNThkMDlkYTMiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwidXNlcl9pZCI6IjQwMjM1MyIsInBy" +
-            "ZWZlcnJlZF91c2VybmFtZSI6InNjYXJkb3pvKzEwNkB2YXRlcy5jb20iLCJkYXlzX3NpbmNlX2NyZWF0aW9uIj" +
-            "oiMTEzIiwiZW1haWwiOiJzY2FyZG96bysxMDZAdmF0ZXMuY29tIn0.pQlWXOKcWAweXEf8Hkn9VVtY04aQv4t5" +
-            "snrXIRIBFjo";
+    public static String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJIZXJuYW4iLCJpYXQiOjE2ODA4NzI1NjAs" +
+            "ImV4cCI6MTY4MDg3NjE2MH0.zDn9ZRvD6Jn3kpTq9Gd9jK56jIYP0xxqXqZIMQ76wsk";
     public static boolean active = true;
 
     public static AccountReqDto buildAccountReqDto(){
@@ -82,6 +70,7 @@ public class TestUtils {
         usrPhones.setCountryCode(countryCode);
         usrPhonesList.add(0, usrPhones);
         user.setUserPhones(usrPhonesList);
+        user.setJwtToken(token);
         return user;
     }
     public static Optional<User> buildOptionalUser() {
@@ -97,6 +86,7 @@ public class TestUtils {
         usrPhones.setCountryCode(countryCode);
         usrPhonesList.add(0, usrPhones);
         user.setUserPhones(usrPhonesList);
+        user.setJwtToken(token);
         return Optional.of(user);
     }
     public static AccountRespDto buildAccountRespDto() {

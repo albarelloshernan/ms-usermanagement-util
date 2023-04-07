@@ -34,13 +34,17 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountRespDto signUp(AccountReqDto dto) {
         AccountRespDto response;
-        User userEntity = new User();
+        User userEntity;
         String jwtToken;
         if(!accountRepository.existsByUsername(dto.getName())) {
             jwtToken = jwtTokenProvider.createToken(dto.getName());
             userEntity = AccountDtoConverter.getInstance().fromDto(dto);
             userEntity.setJwtToken(jwtToken);
-            this.accountRepository.save(userEntity);
+            try{
+                this.accountRepository.save(userEntity);
+            } catch (Exception e) {
+                throw new CustomException("Error al insertar los datos del usuario.", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
         Optional<User> foundUser = this.accountRepository.findOneByEmail(dto.getEmail());
         if (!foundUser.isPresent()) {
