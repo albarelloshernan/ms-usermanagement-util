@@ -29,6 +29,10 @@ public class AccountLoginRespEntityConverter implements Converter<User, AccountL
         dto.setLastLogin(entity.getLastLogin());
         dto.setActive(entity.isActive());
         dto.setToken(entity.getJwtToken());
+        dto.setName(entity.getUsername());
+        dto.setEmail(entity.getEmail());
+        dto.setPassword(entity.getPassword());
+        dto.setPhones(entity.getUserPhones());
         return dto;
     }
 }
