@@ -10,8 +10,7 @@ package "Spring Boot" {
 		port p8080
 
 		folder "model" {
-			[User]
-			[User] -down-> [UserPhones]
+			[User] <-down- [UserPhones]
 		}
 
 		folder "repository" {
@@ -26,7 +25,7 @@ package "Spring Boot" {
 		}
 
 		folder "exception" {
-			[GlobalExceptionHandler] <-down- [AccountException]
+			[GlobalExceptionHandler] <-down- [CustomException]
 		}
 
 		folder "service" {
@@ -34,9 +33,11 @@ package "Spring Boot" {
 			[AccountServiceImpl] -left- ACS
 		}
 
-		folder "controller" {
-			interface "AccountService" AS ACS
-			[AccountCntroller] -right-> ACS
+		folder "security" {
+			[JwtTokenFilter]
+			[JwtTokenFilterConfigurer]
+			[JwtTokenProvider]
+			[UserDetails]
 		}
 
 		folder "dto" {
@@ -46,29 +47,48 @@ package "Spring Boot" {
 			[AccountErrorDto]
 		}
 		
+		folder "controller" {
+			interface "AccountService" AS ACS
+			[AccountCntroller] -right-> ACS
+		}
+		
 		folder "config" {
 			[SwaggerConfig]
+			[WebSecurityConfig]
 		}
 	}
 }
 
 database "H2 DB" {
-    [USERS]
-	[USERS] -down-> [PHONES]
+	[USERS] <-down- [PHONES]
 }
 
 [POST /sign-up] .down.> p8080
 [AccountCntroller] <.up. p8080
+
+[JwtTokenProvider] -down-> [WebSecurityConfig]
+[JwtTokenProvider] <-down- [JwtTokenFilter]
+[JwtTokenProvider] <-down- [JwtTokenFilterConfigurer]
+[JwtTokenFilter] -right-> [JwtTokenFilterConfigurer]
+
+[UserDetails] -right-> [JwtTokenProvider]
+[UserDetails] -left-> AccountRepository
+
 [SwaggerConfig] -left-> [AccountCntroller]
+[WebSecurityConfig] -up-> [AccountCntroller]
+
 [AccountCntroller] <-down- [AccountReqDto]
 [AccountCntroller] <-down- [AccountUsrPhonesReqDto]
 [AccountCntroller] <-down- [AccountRespDto]
 [AccountCntroller] <-down- [AccountErrorDto]
+
+[AccountServiceImpl] <-down- [JwtTokenProvider]
 [AccountServiceImpl] <-down- [AccountDtoConverter]
 [AccountServiceImpl] <-down- [AccountEntityConverter]
 [AccountServiceImpl] <-down- [GlobalExceptionHandler]
 [AccountServiceImpl] -left-> AccountRepository
+
 AccountRepository -down-> [User]
-[User] -left-> [USERS]
+[User] <-left- [USERS]
 
 @enduml
