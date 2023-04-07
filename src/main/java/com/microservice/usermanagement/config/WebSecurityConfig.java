@@ -1,5 +1,6 @@
-package com.microservice.usermanagement.security;
+package com.microservice.usermanagement.config;
 
+import com.microservice.usermanagement.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,22 +28,23 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/ms-user-management/sign-up").permitAll()
-                        .requestMatchers("/ms-user-management/login").permitAll()
-                        .requestMatchers("/h2-console/*").permitAll()
-                        .anyRequest().authenticated()).httpBasic(withDefaults());
+                .requestMatchers("/sign-up").permitAll()
+                .requestMatchers("/login").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .anyRequest().authenticated()).httpBasic(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/v2/api-docs")
-                .requestMatchers("/swagger-resources/*")
+        return (web) -> web.ignoring()
+                .requestMatchers("/swagger-resources/**")
                 .requestMatchers("/swagger-ui.html")
-                .requestMatchers("/configuration/*")
-                .requestMatchers("/webjars/*")
+                .requestMatchers("/configuration/**")
+                .requestMatchers("/webjars/**")
                 .requestMatchers("/public")
                 .and()
                 .ignoring()
-                .requestMatchers("/h2-console/*");
+                .requestMatchers("/h2-console/**");
     }
 }

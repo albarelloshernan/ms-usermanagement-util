@@ -3,18 +3,17 @@ package com.microservice.usermanagement.security;
 import com.microservice.usermanagement.model.User;
 import com.microservice.usermanagement.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MyUserDetails implements UserDetailsService {
+public class UserDetails implements UserDetailsService {
     private final AccountRepository accountRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User appUser = accountRepository.findByUsername(username);
 
         if (appUser == null) {

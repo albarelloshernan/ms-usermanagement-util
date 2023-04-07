@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -21,7 +20,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     @Autowired
-    private MyUserDetails myUserDetails;
+    private UserDetails userDetails;
     @Value("${jwt.token}")
     private String secretKey;
     @Value("${jwt.expire-length}")
@@ -46,7 +45,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
+        org.springframework.security.core.userdetails.UserDetails userDetails = this.userDetails.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
