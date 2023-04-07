@@ -2,6 +2,7 @@ package com.microservice.usermanagement.controller;
 
 import com.microservice.usermanagement.dto.req.AccountReqDto;
 import com.microservice.usermanagement.dto.resp.AccountErrorDto;
+import com.microservice.usermanagement.dto.resp.AccountLoginRespDto;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
 import com.microservice.usermanagement.service.impl.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,11 +14,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping(AccountController.URI)
@@ -25,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AccountController {
     public static final String URI = "/ms-user-management";
-    public static final String PATH = "/sign-up";
+    public static final String SIGN_UP = "/sign-up";
+    public static final String LOGIN = "/login";
     private AccountServiceImpl accountServiceImpl;
     public AccountController(AccountServiceImpl accountServiceImpl) {
         this.accountServiceImpl = accountServiceImpl;
@@ -40,10 +43,28 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Unexpected Error",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AccountErrorDto.class)))})
-    @PostMapping(path= PATH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path= SIGN_UP, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountRespDto> signUp(@Valid @RequestBody final AccountReqDto dto) {
-        AccountRespDto response = new AccountRespDto();
+        AccountRespDto response;
         response = accountServiceImpl.signUp(dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AccountLoginRespDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AccountErrorDto.class))),
+            @ApiResponse(responseCode = "500", description = "Unexpected Error",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AccountErrorDto.class)))})
+    @PostMapping(path= LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccountLoginRespDto> logIn(@RequestHeader(AUTHORIZATION) String credentials,
+                                                     @RequestParam String sub, @RequestParam String password) {
+        AccountLoginRespDto response;
+        response = accountServiceImpl.logIn(credentials, sub, password);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

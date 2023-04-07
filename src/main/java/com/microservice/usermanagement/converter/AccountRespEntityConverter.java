@@ -3,12 +3,12 @@ package com.microservice.usermanagement.converter;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
 import com.microservice.usermanagement.model.User;
 
-public class AccountEntityConverter implements Converter<User, AccountRespDto>{
-    private static AccountEntityConverter instance = null;
-    public AccountEntityConverter() {}
-    public static AccountEntityConverter getInstance() {
+public class AccountRespEntityConverter implements Converter<User, AccountRespDto>{
+    private static AccountRespEntityConverter instance = null;
+    public AccountRespEntityConverter() {}
+    public static AccountRespEntityConverter getInstance() {
         if (instance == null) {
-            instance = new AccountEntityConverter();
+            instance = new AccountRespEntityConverter();
         }
         return instance;
     }

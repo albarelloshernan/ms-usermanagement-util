@@ -1,6 +1,6 @@
 package com.microservice.usermanagement.service.impl;
 
-import com.microservice.usermanagement.converter.AccountEntityConverter;
+import com.microservice.usermanagement.converter.AccountRespEntityConverter;
 import com.microservice.usermanagement.dto.req.AccountReqDto;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
 import com.microservice.usermanagement.model.User;
@@ -24,7 +24,7 @@ class AccountServiceImplTest {
     @Mock
     private AccountRepository accountRepository;
     @Mock
-    private AccountEntityConverter accountEntityConverter;
+    private AccountRespEntityConverter accountRespEntityConverter;
 
     public AccountServiceImplTest() {
         AccountReqDto accountReqDto = new AccountReqDto();
@@ -43,7 +43,8 @@ class AccountServiceImplTest {
         // When
         lenient().when(accountRepository.save(user)).thenReturn(user);
         lenient().when(accountRepository.findOneByEmail(TestUtils.email)).thenReturn(optionalUser);
-        optionalUser.ifPresent(value -> lenient().when(accountEntityConverter.fromEntity(value)).thenReturn(accountRespDto));
+        optionalUser.ifPresent(value -> lenient().when(accountRespEntityConverter.fromEntity(value))
+                .thenReturn(accountRespDto));
 
         // Then
         assertEquals(accountRespDto, accountRespDto);
@@ -60,7 +61,8 @@ class AccountServiceImplTest {
         // When
         lenient().when(accountRepository.save(user)).thenReturn(user);
         lenient().when(accountRepository.findOneByEmail(TestUtils.email)).thenReturn(optionalUser);
-        optionalUser.ifPresent(value -> lenient().when(accountEntityConverter.fromEntity(value)).thenReturn(accountRespDto));
+        optionalUser.ifPresent(value -> lenient().when(accountRespEntityConverter.fromEntity(value))
+                .thenReturn(accountRespDto));
 
         // Then
         assertNull(accountRespDto, "null");

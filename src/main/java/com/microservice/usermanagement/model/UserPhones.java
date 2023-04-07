@@ -1,5 +1,6 @@
 package com.microservice.usermanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -23,6 +24,7 @@ public class UserPhones {
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User user;
 
     @Column(name = "PHONE")

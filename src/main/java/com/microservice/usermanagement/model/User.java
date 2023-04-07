@@ -19,7 +19,6 @@ import java.util.List;
 @ToString(exclude = { "userPhones" })
 public class User {
 
-    @Column(name = "USER_ID")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
     @SequenceGenerator(name = "user_generator", sequenceName = "users_seq", allocationSize = 1)
