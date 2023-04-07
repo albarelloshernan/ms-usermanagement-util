@@ -45,7 +45,8 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        org.springframework.security.core.userdetails.UserDetails userDetails = this.userDetails.loadUserByUsername(getUsername(token));
+        org.springframework.security.core.userdetails.UserDetails userDetails =
+                this.userDetails.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

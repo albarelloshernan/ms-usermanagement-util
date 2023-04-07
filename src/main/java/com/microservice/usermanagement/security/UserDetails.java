@@ -13,7 +13,8 @@ public class UserDetails implements UserDetailsService {
     private final AccountRepository accountRepository;
 
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
         final User appUser = accountRepository.findByUsername(username);
 
         if (appUser == null) {
