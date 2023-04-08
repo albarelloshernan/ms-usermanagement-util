@@ -69,20 +69,7 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            String excMsg = jsonBuilder(HttpStatus.INTERNAL_SERVER_ERROR, "Expired or invalid JWT token");
             throw new CustomException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private String jsonBuilder(HttpStatus httpStatus, String detail) {
-        JSONObject error = new JSONObject();
-        JSONObject mainError = new JSONObject();
-        JSONArray errors = new JSONArray();
-        error.put("timestamp", LocalDateTime.now().toString());
-        error.put("codigo", httpStatus.value());
-        error.put("detail", detail);
-        errors.appendElement(error);
-        mainError.put("error",errors);
-        return mainError.toJSONString();
     }
 }

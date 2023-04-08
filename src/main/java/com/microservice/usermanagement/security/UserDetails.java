@@ -30,8 +30,7 @@ public class UserDetails implements UserDetailsService {
         final Optional<User> opUser = accountRepository.findOneByEmail(username);
 
         if (!opUser.isPresent()) {
-            String excMsg = jsonBuilder(HttpStatus.NOT_FOUND, "User '" + username + "' not found.");
-            throw new UsernameNotFoundException(excMsg);
+            throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
 
         return org.springframework.security.core.userdetails.User
@@ -43,17 +42,5 @@ public class UserDetails implements UserDetailsService {
                 .disabled(false)
                 .authorities(ROLE_ADMIN)
                 .build();
-    }
-
-    private String jsonBuilder(HttpStatus httpStatus, String detail) {
-        JSONObject error = new JSONObject();
-        JSONObject mainError = new JSONObject();
-        JSONArray errors = new JSONArray();
-        error.put("timestamp", LocalDateTime.now().toString());
-        error.put("codigo", httpStatus.value());
-        error.put("detail", detail);
-        errors.appendElement(error);
-        mainError.put("error",errors);
-        return mainError.toJSONString();
     }
 }
