@@ -13,6 +13,8 @@ import com.microservice.usermanagement.security.JwtTokenProvider;
 import com.microservice.usermanagement.service.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -42,6 +45,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountRespDto signUp(AccountReqDto accountReqDto) {
         AccountRespDto response;
+        JSONObject error = new JSONObject();
+        JSONObject mainError = new JSONObject();
+        JSONArray errors = new JSONArray();
         User userEntity = new User();
         String jwtToken;
         if(!accountRepository.existsByUsername(accountReqDto.getName())) {
@@ -52,12 +58,14 @@ public class AccountServiceImpl implements AccountService {
             try{
                 this.accountRepository.save(userEntity);
             } catch (Exception e) {
-                throw new CustomException("Error al insertar los datos del usuario.", HttpStatus.INTERNAL_SERVER_ERROR);
+                String excMsg = jsonBuilder(HttpStatus.INTERNAL_SERVER_ERROR, "Error al insertar datos.");
+                throw new CustomException(excMsg, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         Optional<User> foundUser = accountRepository.findOneByEmail(accountReqDto.getEmail());
         if (!foundUser.isPresent()) {
-            throw new CustomException("Usuario no encontrado.", HttpStatus.NOT_FOUND);
+            String excMsg = jsonBuilder(HttpStatus.NOT_FOUND, "User not found.");
+            throw new CustomException(excMsg, HttpStatus.NOT_FOUND);
         }
         response = AccountRespEntityConverter.getInstance().fromEntity(userEntity);
         return response;
@@ -71,8 +79,8 @@ public class AccountServiceImpl implements AccountService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password));
         } catch (AuthenticationException e) {
-            throw new CustomException("Invalid username/password supplied: " + e.getMessage(),
-                    HttpStatus.UNPROCESSABLE_ENTITY);
+            String excMsg = jsonBuilder(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong username or password.");
+            throw new CustomException(excMsg, HttpStatus.UNPROCESSABLE_ENTITY);
         }
         Optional<User> optionalUser = accountRepository.findOneByEmail(subject);
         if(optionalUser.isPresent()) {
@@ -81,8 +89,21 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.saveAndFlush(optionalUser.get());
             accountLoginRespDto = AccountLoginRespEntityConverter.getInstance().fromEntity(optionalUser.get());
         } else {
-            throw new CustomException("User not found.", HttpStatus.NOT_FOUND);
+            String excMsg = jsonBuilder(HttpStatus.NOT_FOUND, "User not found.");
+            throw new CustomException(excMsg, HttpStatus.NOT_FOUND);
         }
         return accountLoginRespDto;
+    }
+
+    private String jsonBuilder(HttpStatus httpStatus, String detail) {
+        JSONObject error = new JSONObject();
+        JSONObject mainError = new JSONObject();
+        JSONArray errors = new JSONArray();
+        error.put("timestamp", LocalDateTime.now().toString());
+        error.put("codigo", httpStatus.value());
+        error.put("detail", detail);
+        errors.appendElement(error);
+        mainError.put("error",errors);
+        return mainError.toJSONString();
     }
 }
