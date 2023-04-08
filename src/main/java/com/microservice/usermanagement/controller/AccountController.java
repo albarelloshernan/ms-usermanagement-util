@@ -42,10 +42,10 @@ public class AccountController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AccountErrorDto.class)))})
     @PostMapping(path= SIGN_UP, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccountRespDto> signUp(@Valid @RequestBody final AccountReqDto dto) {
-        AccountRespDto response;
+    public ResponseEntity<Object> signUp(@Valid @RequestBody final AccountReqDto dto) {
+        ResponseEntity<Object> response;
         response = accountServiceImpl.signUp(dto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
     @ApiResponses(value = {
@@ -59,10 +59,10 @@ public class AccountController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AccountErrorDto.class)))})
     @PostMapping(path= LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccountLoginRespDto> logIn(@RequestHeader(AUTHORIZATION) String credentials,
+    public ResponseEntity<Object> logIn(@RequestHeader(AUTHORIZATION) String credentials,
                                                      @RequestParam String sub, @RequestParam String password) {
-        AccountLoginRespDto response;
+        ResponseEntity<Object> response;
         response = accountServiceImpl.logIn(credentials, sub, password);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 }

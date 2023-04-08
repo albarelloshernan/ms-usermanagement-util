@@ -17,7 +17,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = { "user" })
 public class AccountLoginRespDto {
 
     @Schema(description = "Id del usuario.")
