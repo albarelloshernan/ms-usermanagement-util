@@ -1,4 +1,3 @@
-
 # User management microservice
 
 Microservicio para registro y consulta de usuarios autenticados.
@@ -16,18 +15,24 @@ Microservicio para registro y consulta de usuarios autenticados.
 Los diagramas se encuentran dentro del proyecto en la carpeta diagrams/
 
 ### Diagrama de componentes
+
 ![Diagrama de componentes](diagrams/Diagrama%20de%20Componentes%20UML2.png)
 
 ### Diagrama de secuencia
+
 ![Diagrama de secuencia](diagrams/Diagrama%20de%20Secuencia%20UML.png)
 
-Nota: Una versión posterior implementará las características de autenticación y consulta. 
+Nota: Una versión posterior implementará las características de autenticación y consulta.
 
 ---
 
 ## Instrucciones de construcción
 
-**Spring Initializr:** A través del portal https://start.spring.io/ se puede iniciar la construcción de una aplicación introduciendo el nombre del proyecto, sus coordenadas gradle y realizando la selección de las dependencias que conocemos de antemano que va a necesitar nuestro proyecto. Estas dependencias únicamente nos las agregará al fichero pom.xml por lo que en caso de no agregarlas en la definición del proyecto podremos agregarlas manualmente con gran facilidad. Para nuestro primero proyecto el formulario quedará del siguiente modo:
+**Spring Initializr:** A través del portal https://start.spring.io/ se puede iniciar la construcción de una aplicación
+introduciendo el nombre del proyecto, sus coordenadas gradle y realizando la selección de las dependencias que conocemos
+de antemano que va a necesitar nuestro proyecto. Estas dependencias únicamente nos las agregará al fichero pom.xml por
+lo que en caso de no agregarlas en la definición del proyecto podremos agregarlas manualmente con gran facilidad. Para
+nuestro primero proyecto el formulario quedará del siguiente modo:
 
 ![Construcción de proyecto](diagrams/Construcción%20de%20proyecto.png)
 

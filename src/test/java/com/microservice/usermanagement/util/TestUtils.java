@@ -23,6 +23,11 @@ public class TestUtils {
     public static Integer userId = 1;
     public static SimpleDateFormat dateFor = new SimpleDateFormat("dd/MM/yyyy");
     public static Date created;
+    public static Date lastLogin;
+    public static String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJIZXJuYW4iLCJpYXQiOjE2ODA4NzI1NjAs" +
+            "ImV4cCI6MTY4MDg3NjE2MH0.zDn9ZRvD6Jn3kpTq9Gd9jK56jIYP0xxqXqZIMQ76wsk";
+    public static boolean active = true;
+
     static {
         try {
             created = dateFor.parse("03/04/2023");
@@ -30,7 +35,7 @@ public class TestUtils {
             throw new RuntimeException(e);
         }
     }
-    public static Date lastLogin;
+
     static {
         try {
             lastLogin = dateFor.parse("04/04/2023");
@@ -39,11 +44,7 @@ public class TestUtils {
         }
     }
 
-    public static String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJIZXJuYW4iLCJpYXQiOjE2ODA4NzI1NjAs" +
-            "ImV4cCI6MTY4MDg3NjE2MH0.zDn9ZRvD6Jn3kpTq9Gd9jK56jIYP0xxqXqZIMQ76wsk";
-    public static boolean active = true;
-
-    public static AccountReqDto buildAccountReqDto(){
+    public static AccountReqDto buildAccountReqDto() {
         AccountReqDto accountReqDto = new AccountReqDto();
         AccountUsrPhonesReqDto accountUsrPhonesReqDto = new AccountUsrPhonesReqDto();
         List<AccountUsrPhonesReqDto> accountUsrPhonesReqDtoList = new ArrayList<>();
@@ -57,6 +58,7 @@ public class TestUtils {
         accountReqDto.setPhones(accountUsrPhonesReqDtoList);
         return accountReqDto;
     }
+
     public static User buildUser() {
         UserPhones usrPhones = new UserPhones();
         List<UserPhones> usrPhonesList = new ArrayList<>();
@@ -73,6 +75,7 @@ public class TestUtils {
         user.setJwtToken(token);
         return user;
     }
+
     public static Optional<User> buildOptionalUser() {
         UserPhones usrPhones = new UserPhones();
         List<UserPhones> usrPhonesList = new ArrayList<>();
@@ -89,6 +92,7 @@ public class TestUtils {
         user.setJwtToken(token);
         return Optional.of(user);
     }
+
     public static AccountRespDto buildAccountRespDto() {
         AccountRespDto accountRespDto = new AccountRespDto();
         accountRespDto.setId(userId);

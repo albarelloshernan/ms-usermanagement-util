@@ -12,8 +12,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @Builder
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude = { "user" })
-@ToString(exclude = { "user" })
+@EqualsAndHashCode(exclude = {"user"})
+@ToString(exclude = {"user"})
 public class UserPhones {
 
     @Id

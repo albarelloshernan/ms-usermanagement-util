@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,9 +27,11 @@ public class AccountController {
     public static final String SIGN_UP = "/sign-up";
     public static final String LOGIN = "/login";
     private AccountServiceImpl accountServiceImpl;
+
     public AccountController(AccountServiceImpl accountServiceImpl) {
         this.accountServiceImpl = accountServiceImpl;
     }
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -41,7 +42,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Unexpected Error",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AccountErrorDto.class)))})
-    @PostMapping(path= SIGN_UP, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = SIGN_UP, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> signUp(@Valid @RequestBody final AccountReqDto dto) {
         ResponseEntity<Object> response;
         response = accountServiceImpl.signUp(dto);
@@ -58,9 +59,9 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Unexpected Error",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AccountErrorDto.class)))})
-    @PostMapping(path= LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> logIn(@RequestHeader(AUTHORIZATION) String credentials,
-                                                     @RequestParam String sub, @RequestParam String password) {
+                                        @RequestParam String sub, @RequestParam String password) {
         ResponseEntity<Object> response;
         response = accountServiceImpl.logIn(credentials, sub, password);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());

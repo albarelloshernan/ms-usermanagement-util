@@ -7,7 +7,6 @@ import com.microservice.usermanagement.dto.req.AccountReqDto;
 import com.microservice.usermanagement.dto.resp.AccountErrorDto;
 import com.microservice.usermanagement.dto.resp.AccountLoginRespDto;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
-import com.microservice.usermanagement.exception.CustomException;
 import com.microservice.usermanagement.model.User;
 import com.microservice.usermanagement.repository.AccountRepository;
 import com.microservice.usermanagement.security.JwtTokenProvider;
@@ -36,12 +35,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
-    @Autowired
-    private AccountRepository accountRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     @Transactional
@@ -52,12 +50,12 @@ public class AccountServiceImpl implements AccountService {
         JSONArray errors = new JSONArray();
         User userEntity = new User();
         String jwtToken;
-        if(!accountRepository.existsByUsername(accountReqDto.getName())) {
-            jwtToken = jwtTokenProvider.createToken(accountReqDto.getEmail(),accountReqDto.getPassword());
+        if (!accountRepository.existsByUsername(accountReqDto.getName())) {
+            jwtToken = jwtTokenProvider.createToken(accountReqDto.getEmail(), accountReqDto.getPassword());
             userEntity = AccountDtoConverter.getInstance().fromDto(accountReqDto);
             userEntity.setPassword(passwordEncoder.encode(accountReqDto.getPassword()));
             userEntity.setJwtToken(jwtToken);
-            try{
+            try {
                 this.accountRepository.save(userEntity);
             } catch (Exception e) {
                 String excMsg = jsonBuilder("Error al insertar datos.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
             return new ResponseEntity<>(excMsg, HttpStatus.UNPROCESSABLE_ENTITY);
         }
         Optional<User> optionalUser = accountRepository.findOneByEmail(subject);
-        if(optionalUser.isPresent()) {
+        if (optionalUser.isPresent()) {
             optionalUser.get().setJwtToken(jwtTokenProvider.createToken(username, password));
             optionalUser.get().setLastLogin(Date.from(Instant.now()));
             accountRepository.saveAndFlush(optionalUser.get());
@@ -102,10 +100,10 @@ public class AccountServiceImpl implements AccountService {
         JSONArray errors = new JSONArray();
         JSONObject mainError = new JSONObject();
         response.setTimestamp(LocalDateTime.now().toString());
-        response.setCodigo( httpStatus.value());
+        response.setCodigo(httpStatus.value());
         response.setDetail(detail);
         errors.appendElement(response);
-        mainError.put("error",errors);
+        mainError.put("error", errors);
         return mainError.toJSONString();
     }
 }

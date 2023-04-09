@@ -23,24 +23,28 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/ms-user-management/sign-up").permitAll()
-                .requestMatchers("/ms-user-management/login").permitAll()
-                .requestMatchers("/**").permitAll()
-                .anyRequest().authenticated()).httpBasic(withDefaults()).csrf().disable()
+                        .requestMatchers("/ms-user-management/sign-up").permitAll()
+                        .requestMatchers("/ms-user-management/login").permitAll()
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated()).httpBasic(withDefaults()).csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()

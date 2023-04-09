@@ -3,9 +3,12 @@ package com.microservice.usermanagement.converter;
 import com.microservice.usermanagement.dto.req.AccountUsrPhonesReqDto;
 import com.microservice.usermanagement.model.UserPhones;
 
-public final class AccountUsrPhonesConverter implements Converter<UserPhones, AccountUsrPhonesReqDto>{
+public final class AccountUsrPhonesConverter implements Converter<UserPhones, AccountUsrPhonesReqDto> {
     private static AccountUsrPhonesConverter instance = null;
-    public AccountUsrPhonesConverter() {}
+
+    public AccountUsrPhonesConverter() {
+    }
+
     public static AccountUsrPhonesConverter getInstance() {
         if (instance == null) {
             instance = new AccountUsrPhonesConverter();

@@ -20,7 +20,8 @@ import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceImplTest {
-    @InjectMocks AccountServiceImpl accountServiceImpl;
+    @InjectMocks
+    AccountServiceImpl accountServiceImpl;
     @Mock
     private AccountRepository accountRepository;
     @Mock
@@ -33,7 +34,7 @@ class AccountServiceImplTest {
     }
 
     @Test
-    public void givenNewUser_wheSignUp_thenReturnAccountRespDto(){
+    public void givenNewUser_wheSignUp_thenReturnAccountRespDto() {
         // Given
         AccountReqDto accountReqDto = TestUtils.buildAccountReqDto();
         User user = TestUtils.buildUser();
@@ -51,7 +52,7 @@ class AccountServiceImplTest {
     }
 
     @Test
-    public void givenNewUser_wheSignUp_thenReturnNull(){
+    public void givenNewUser_wheSignUp_thenReturnNull() {
         // Given
         AccountReqDto accountReqDto = TestUtils.buildAccountReqDto();
         User user = TestUtils.buildUser();

@@ -1,7 +1,7 @@
 @startuml
 
 node "REST API" {
-	[POST /sign-up]
+[POST /sign-up]
 }
 
 package "Spring Boot" {
@@ -57,10 +57,11 @@ package "Spring Boot" {
 			[WebSecurityConfig]
 		}
 	}
+
 }
 
 database "H2 DB" {
-	[USERS] <-down- [PHONES]
+[USERS] <-down- [PHONES]
 }
 
 [POST /sign-up] .down.> p8080

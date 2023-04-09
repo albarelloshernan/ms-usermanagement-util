@@ -15,29 +15,24 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude = { "userPhones" })
-@ToString(exclude = { "userPhones" })
+@EqualsAndHashCode(exclude = {"userPhones"})
+@ToString(exclude = {"userPhones"})
 public class User {
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    List<UserPhones> userPhones;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
     @SequenceGenerator(name = "user_generator", sequenceName = "users_seq", allocationSize = 1)
     private Integer userId;
-
     @Column(name = "USER_NAME")
     private String username;
-
     @Column(name = "EMAIL")
     @NotBlank(message = "Email required.")
     private String email;
-
     @Column(name = "PASSWORD")
     @NotBlank(message = "Password required.")
     private String password;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    List<UserPhones> userPhones;
-
     @CreationTimestamp
     @Column(name = "CREATED_AT")
     private Date createdAt;
