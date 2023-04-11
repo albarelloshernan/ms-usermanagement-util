@@ -4,11 +4,14 @@ spring:
             hibernate:
                 dialect: org.hibernate.dialect.H2Dialect
                 format_sql: 'true'
+                show_sql: 'true'
         hibernate:
             ddl-auto: update
         database-platform: org.hibernate.dialect.H2Dialect
     datasource:
         driverClassName: org.h2.Driver
+        initialization-mode: always
+        initialize: true
         password: password
         username: develop
         url: jdbc:h2:mem:developdb

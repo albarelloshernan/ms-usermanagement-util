@@ -3,28 +3,22 @@ package com.microservice.usermanagement.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @Entity
 @Table(name = "PHONES")
 @AllArgsConstructor
-@Builder
-@RequiredArgsConstructor
-@EqualsAndHashCode(exclude = {"user"})
-@ToString(exclude = {"user"})
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class UserPhones {
 
     @Id
-    @Column(name = "PHONE_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer phoneId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_phones_generator")
+    @SequenceGenerator(name = "user_phones_generator", sequenceName = "user_phones_seq", allocationSize = 1)
+    private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Column(name = "PHONE")

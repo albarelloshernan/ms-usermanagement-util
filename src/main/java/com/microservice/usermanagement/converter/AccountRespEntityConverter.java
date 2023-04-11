@@ -27,7 +27,7 @@ public class AccountRespEntityConverter implements Converter<User, AccountRespDt
             return null;
         }
         AccountRespDto dto = new AccountRespDto();
-        dto.setId(entity.getUserId());
+        dto.setId(entity.getId());
         dto.setCreated(entity.getCreatedAt());
         dto.setLastLogin(entity.getLastLogin());
         dto.setActive(entity.isActive());
