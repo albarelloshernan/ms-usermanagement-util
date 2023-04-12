@@ -1,12 +1,8 @@
 package com.microservice.usermanagement.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.microservice.usermanagement.model.UserPhones;
+import com.microservice.usermanagement.model.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.util.Date;
@@ -46,5 +42,5 @@ public class AccountLoginRespDto {
     private String password;
 
     @Schema(description = "Teléfonos del usuario.")
-    private List<UserPhones> phones;
+    private List<Phone> phones;
 }

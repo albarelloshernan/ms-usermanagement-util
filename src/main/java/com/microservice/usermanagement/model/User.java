@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +43,8 @@ public class User {
     private Date lastLogin;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<UserPhones> userPhones;
+    @Column(name = "PHONES")
+    List<Phone> phones;
 
     @Column(name = "IS_ACTIVE")
     private boolean isActive;

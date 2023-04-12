@@ -35,7 +35,7 @@ public class AccountLoginRespEntityConverter implements Converter<User, AccountL
         dto.setName(entity.getUsername());
         dto.setEmail(entity.getEmail());
         dto.setPassword(entity.getPassword());
-        dto.setPhones(entity.getUserPhones());
+        dto.setPhones(entity.getPhones());
         return dto;
     }
 }

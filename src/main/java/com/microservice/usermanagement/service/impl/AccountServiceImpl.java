@@ -7,12 +7,16 @@ import com.microservice.usermanagement.dto.req.AccountReqDto;
 import com.microservice.usermanagement.dto.resp.AccountErrorDto;
 import com.microservice.usermanagement.dto.resp.AccountLoginRespDto;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
+import com.microservice.usermanagement.exception.CustomException;
 import com.microservice.usermanagement.model.User;
 import com.microservice.usermanagement.repository.AccountRepository;
 import com.microservice.usermanagement.security.JwtTokenProvider;
 import com.microservice.usermanagement.service.AccountService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
@@ -32,22 +36,18 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    @Autowired
     private AccountRepository accountRepository;
 
     @Override
     @Transactional
-    public ResponseEntity<Object> signUp(AccountReqDto accountReqDto) {
+    public AccountRespDto signUp(AccountReqDto accountReqDto) {
         AccountRespDto response;
-        JSONObject error = new JSONObject();
-        JSONObject mainError = new JSONObject();
-        JSONArray errors = new JSONArray();
+        AccountErrorDto errorDto = new AccountErrorDto();
         User userEntity = new User();
         String jwtToken;
         if (!accountRepository.existsByUsername(accountReqDto.getName())) {
@@ -58,29 +58,38 @@ public class AccountServiceImpl implements AccountService {
             try {
                 this.accountRepository.save(userEntity);
             } catch (Exception e) {
-                String excMsg = jsonBuilder("Error al insertar datos.", HttpStatus.INTERNAL_SERVER_ERROR);
-                return new ResponseEntity<>(excMsg, HttpStatus.INTERNAL_SERVER_ERROR);
+                errorDto.setTimestamp(LocalDateTime.now().toString());
+                errorDto.setCodigo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                errorDto.setDetail("Error al insertar datos.");
+                throw new CustomException(errorDto.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         Optional<User> foundUser = accountRepository.findOneByEmail(accountReqDto.getEmail());
         if (!foundUser.isPresent()) {
-            String excMsg = jsonBuilder("User not found.", HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(excMsg, HttpStatus.NOT_FOUND);
+            errorDto.setTimestamp(LocalDateTime.now().toString());
+            errorDto.setCodigo(HttpStatus.NOT_FOUND.value());
+            errorDto.setDetail("User not found.");
+            throw new CustomException(errorDto.toString(), HttpStatus.NOT_FOUND);
         }
         response = AccountRespEntityConverter.getInstance().fromEntity(userEntity);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return response;
     }
 
-    public ResponseEntity<Object> logIn(String jwtToken, String username, String password) {
+    @Override
+    @Transactional
+    public AccountLoginRespDto logIn(String jwtToken, String username, String password) {
         AccountLoginRespDto response;
+        AccountErrorDto errorDto = new AccountErrorDto();
         String parsedToken = jwtTokenProvider.resolveToken(jwtToken);
         String subject = jwtTokenProvider.getUsername(parsedToken);
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password));
         } catch (AuthenticationException e) {
-            String excMsg = jsonBuilder("Wrong username or password.", HttpStatus.UNPROCESSABLE_ENTITY);
-            return new ResponseEntity<>(excMsg, HttpStatus.UNPROCESSABLE_ENTITY);
+            errorDto.setTimestamp(LocalDateTime.now().toString());
+            errorDto.setCodigo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+            errorDto.setDetail("Wrong username or password.");
+            throw new CustomException(errorDto.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
         Optional<User> optionalUser = accountRepository.findOneByEmail(subject);
         if (optionalUser.isPresent()) {
@@ -89,21 +98,12 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.saveAndFlush(optionalUser.get());
             response = AccountLoginRespEntityConverter.getInstance().fromEntity(optionalUser.get());
         } else {
-            String excMsg = jsonBuilder("User not found.", HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(excMsg, HttpStatus.NOT_FOUND);
+            errorDto.setTimestamp(LocalDateTime.now().toString());
+            errorDto.setCodigo(HttpStatus.NOT_FOUND.value());
+            errorDto.setDetail("User not found.");
+            throw new CustomException(errorDto.toString(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return response;
     }
 
-    private String jsonBuilder(String detail, HttpStatus httpStatus) {
-        AccountErrorDto response = new AccountErrorDto();
-        JSONArray errors = new JSONArray();
-        JSONObject mainError = new JSONObject();
-        response.setTimestamp(LocalDateTime.now().toString());
-        response.setCodigo(httpStatus.value());
-        response.setDetail(detail);
-        errors.appendElement(response);
-        mainError.put("error", errors);
-        return mainError.toJSONString();
-    }
 }

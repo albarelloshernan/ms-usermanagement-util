@@ -11,13 +11,11 @@ import org.springframework.test.context.web.WebAppConfiguration
 import spock.lang.Specification
 import spock.lang.Unroll
 
-@ContextConfiguration(classes = UserManagementApplication.class)
-@WebAppConfiguration
-@SpringBootTest
 class AccountServiceImplTest extends Specification {
 
     AccountServiceImpl accountServiceImplMock
     AccountRepository accountRepositoryMock
+    //agregar resto de dependencias (se mockean), el service se inicializa, los tests agregar los datos y dependencias en el given
 
     def setup() {
         accountServiceImplMock = Mock(AccountServiceImpl)

@@ -1,9 +1,9 @@
 package com.microservice.usermanagement.converter;
 
 import com.microservice.usermanagement.dto.req.AccountUsrPhonesReqDto;
-import com.microservice.usermanagement.model.UserPhones;
+import com.microservice.usermanagement.model.Phone;
 
-public final class AccountUsrPhonesConverter implements Converter<UserPhones, AccountUsrPhonesReqDto> {
+public final class AccountUsrPhonesConverter implements Converter<Phone, AccountUsrPhonesReqDto> {
     private static AccountUsrPhonesConverter instance = null;
 
     public AccountUsrPhonesConverter() {
@@ -17,11 +17,11 @@ public final class AccountUsrPhonesConverter implements Converter<UserPhones, Ac
     }
 
     @Override
-    public UserPhones fromDto(AccountUsrPhonesReqDto dto) {
+    public Phone fromDto(AccountUsrPhonesReqDto dto) {
         if (dto == null) {
             return null;
         }
-        UserPhones entity = new UserPhones();
+        Phone entity = new Phone();
         entity.setPhone(dto.getNumber());
         entity.setCityCode(dto.getCityCode());
         entity.setCountryCode(dto.getCountryCode());
@@ -29,7 +29,7 @@ public final class AccountUsrPhonesConverter implements Converter<UserPhones, Ac
     }
 
     @Override
-    public AccountUsrPhonesReqDto fromEntity(UserPhones entity) {
+    public AccountUsrPhonesReqDto fromEntity(Phone entity) {
         if (entity == null) {
             return null;
         }

@@ -25,7 +25,7 @@ public final class AccountDtoConverter implements Converter<User, AccountReqDto>
         entity.setUsername(dto.getName());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
-        entity.setUserPhones(AccountUsrPhonesConverter.getInstance().fromDto(dto.getPhones()));
+        entity.setPhones(AccountUsrPhonesConverter.getInstance().fromDto(dto.getPhones()));
         entity.setActive(true);
         return entity;
     }
@@ -39,7 +39,7 @@ public final class AccountDtoConverter implements Converter<User, AccountReqDto>
         dto.setName(entity.getUsername());
         dto.setEmail(entity.getEmail());
         dto.setPassword(entity.getPassword());
-        dto.setPhones(AccountUsrPhonesConverter.getInstance().fromEntity(entity.getUserPhones()));
+        dto.setPhones(AccountUsrPhonesConverter.getInstance().fromEntity(entity.getPhones()));
         return dto;
     }
 }

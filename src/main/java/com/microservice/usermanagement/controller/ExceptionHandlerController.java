@@ -1,13 +1,14 @@
-package com.microservice.usermanagement.exception;
+package com.microservice.usermanagement.controller;
 
+import com.microservice.usermanagement.exception.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice
+public class ExceptionHandlerController {
 
     @ExceptionHandler(value = CustomException.class)
     public ResponseEntity<Object> exception(CustomException exception) {
