@@ -1,14 +1,16 @@
 package com.microservice.usermanagement.service.impl
 
 import com.microservice.usermanagement.converter.AccountDtoConverter
+import com.microservice.usermanagement.converter.AccountRespEntityConverter
 import com.microservice.usermanagement.dto.req.AccountReqDto
 import com.microservice.usermanagement.dto.req.AccountUsrPhonesReqDto
+import com.microservice.usermanagement.dto.resp.AccountErrorDto
 import com.microservice.usermanagement.dto.resp.AccountErrorListDto
 import com.microservice.usermanagement.dto.resp.AccountLoginRespDto
-import com.microservice.usermanagement.dto.resp.AccountRespDto
 import com.microservice.usermanagement.repository.AccountRepository
 import com.microservice.usermanagement.security.JwtTokenProvider
 import com.microservice.usermanagement.service.AccountService
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -33,21 +35,19 @@ class AccountServiceImplTest extends Specification {
     }
 
     @Unroll
-    def "Service SignUp returns response or throws #exception"() {
+    def "Service SignUp returns response"() {
         given:
-        def request = new AccountReqDto()
-        def phones = new AccountUsrPhonesReqDto()
+        def request = Stub(AccountReqDto)
+        def phones = Stub(AccountUsrPhonesReqDto)
         request.setName("Probador")
         request.setEmail("probador@gmail.com")
         request.setPassword("a2asfGfdfdf4")
         phones.setNumber(1166778899)
         phones.setCityCode(9)
         phones.setCountryCode("+54")
-        request.setPhones(phones)
 
         def userEntity = AccountDtoConverter.getInstance().fromDto(request)
-        def respDto = new AccountRespDto()
-        def errorDto = new AccountErrorListDto()
+        def respDto = AccountRespEntityConverter.getInstance().fromEntity(userEntity)
 
         accountRepositoryMock.existsByUsername(request.getName())
         jwtTokenProviderMock.createToken(request.getEmail(), request.getPassword())
@@ -55,16 +55,19 @@ class AccountServiceImplTest extends Specification {
         accountRepositoryMock.save(userEntity)
         accountRepositoryMock.findOneByEmail(request.getEmail())
 
+        def errorDto = Stub(AccountErrorDto)
+        def errorListDto = Stub(AccountErrorListDto)
+        errorDto.setTimestamp("2023-04-12T18:15:25.386")
+        errorDto.setCodigo(HttpStatus.NOT_FOUND.value())
+        errorDto.setDetail("User not found.")
+        errorListDto.setErrorMsg(errorDto)
+
         when:
-        def response = accountService.signUp(request) >> {throw (exception)}
+        def response = accountService.signUp(request)
 
         then:
-        response == result
+        response == respDto
 
-        where:
-        exception               |   result
-        new AccountRespDto()    |   respDto
-        new AccountErrorListDto() |   errorDto
     }
 
     @Unroll
@@ -97,7 +100,7 @@ class AccountServiceImplTest extends Specification {
         where:
         exception                   |   result
         new AccountLoginRespDto()   |   respDto
-        new AccountErrorListDto() |   errorDto
+        new AccountErrorListDto()   |   errorDto
 
     }
 }

@@ -162,15 +162,3 @@ Se incluyen collections en la carpeta diagrams/postman.
 | `password` | `string` | **Requerido**. Password del usuario para autenticación.                                |
 
 ---
-
-## WIP
-
-- Declaraciones de relacionamiento de entidades en hibernate no impacta generación de foreign key en tabla PHONES.
-En la captura se puede observar que la declaración fue realizada.
-
-  ![foreign key null](diagrams/WIP/foreign%20key%20null.png)
-
-
-- Incorporar conceptos de Spock framework para aplicarlas pruebas unitarias en funcionalidades de capa de servicios.
-
----
