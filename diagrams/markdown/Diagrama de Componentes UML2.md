@@ -25,7 +25,7 @@ package "Spring Boot" {
 		}
 
 		folder "exception" {
-			[GlobalExceptionHandler] <-down- [CustomException]
+			[CustomException]
 		}
 
 		folder "service" {
@@ -50,6 +50,7 @@ package "Spring Boot" {
 		folder "controller" {
 			interface "AccountService" AS ACS
 			[AccountCntroller] -right-> ACS
+			[ExceptionHandleController]
 		}
 		
 		folder "config" {
@@ -86,7 +87,7 @@ database "H2 DB" {
 [AccountServiceImpl] <-down- [JwtTokenProvider]
 [AccountServiceImpl] <-down- [AccountDtoConverter]
 [AccountServiceImpl] <-down- [AccountEntityConverter]
-[AccountServiceImpl] <-down- [GlobalExceptionHandler]
+[AccountServiceImpl] <-down- [CustomException]
 [AccountServiceImpl] -left-> AccountRepository
 
 AccountRepository -down-> [User]
