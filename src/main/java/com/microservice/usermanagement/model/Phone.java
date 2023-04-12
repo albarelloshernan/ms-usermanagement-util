@@ -17,9 +17,6 @@ public class Phone {
     @SequenceGenerator(name = "user_phones_generator", sequenceName = "user_phones_seq", allocationSize = 1)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private User user;
-
     @Column(name = "PHONE")
     private Long phone;
 
