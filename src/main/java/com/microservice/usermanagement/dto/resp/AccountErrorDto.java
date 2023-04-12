@@ -2,11 +2,11 @@ package com.microservice.usermanagement.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountErrorDto {
@@ -20,4 +20,5 @@ public class AccountErrorDto {
 
     @Schema(description = "Detalle del error.")
     private String detail;
+
 }

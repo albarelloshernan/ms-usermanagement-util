@@ -3,14 +3,14 @@ package com.microservice.usermanagement.dto.resp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.microservice.usermanagement.model.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountLoginRespDto {

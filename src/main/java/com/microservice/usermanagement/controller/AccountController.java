@@ -1,7 +1,7 @@
 package com.microservice.usermanagement.controller;
 
 import com.microservice.usermanagement.dto.req.AccountReqDto;
-import com.microservice.usermanagement.dto.resp.AccountErrorDto;
+import com.microservice.usermanagement.dto.resp.AccountErrorListDto;
 import com.microservice.usermanagement.dto.resp.AccountLoginRespDto;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
 import com.microservice.usermanagement.service.impl.AccountServiceImpl;
@@ -36,10 +36,10 @@ public class AccountController {
                             schema = @Schema(implementation = AccountRespDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = AccountErrorDto.class))),
+                            schema = @Schema(implementation = AccountErrorListDto.class))),
             @ApiResponse(responseCode = "500", description = "Unexpected Error",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = AccountErrorDto.class)))})
+                            schema = @Schema(implementation = AccountErrorListDto.class)))})
     @PostMapping(path = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountRespDto> signUp(@Valid @RequestBody final AccountReqDto dto) {
         AccountRespDto response;
@@ -53,10 +53,10 @@ public class AccountController {
                             schema = @Schema(implementation = AccountLoginRespDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = AccountErrorDto.class))),
+                            schema = @Schema(implementation = AccountErrorListDto.class))),
             @ApiResponse(responseCode = "500", description = "Unexpected Error",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = AccountErrorDto.class)))})
+                            schema = @Schema(implementation = AccountErrorListDto.class)))})
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountLoginRespDto> logIn(@RequestHeader(AUTHORIZATION) String credentials,
                                         @RequestParam String sub, @RequestParam String password) {

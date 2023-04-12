@@ -3,10 +3,9 @@ package com.microservice.usermanagement.service.impl
 import com.microservice.usermanagement.converter.AccountDtoConverter
 import com.microservice.usermanagement.dto.req.AccountReqDto
 import com.microservice.usermanagement.dto.req.AccountUsrPhonesReqDto
-import com.microservice.usermanagement.dto.resp.AccountErrorDto
+import com.microservice.usermanagement.dto.resp.AccountErrorListDto
 import com.microservice.usermanagement.dto.resp.AccountLoginRespDto
 import com.microservice.usermanagement.dto.resp.AccountRespDto
-import com.microservice.usermanagement.exception.CustomException
 import com.microservice.usermanagement.repository.AccountRepository
 import com.microservice.usermanagement.security.JwtTokenProvider
 import com.microservice.usermanagement.service.AccountService
@@ -48,7 +47,7 @@ class AccountServiceImplTest extends Specification {
 
         def userEntity = AccountDtoConverter.getInstance().fromDto(request)
         def respDto = new AccountRespDto()
-        def errorDto = new AccountErrorDto()
+        def errorDto = new AccountErrorListDto()
 
         accountRepositoryMock.existsByUsername(request.getName())
         jwtTokenProviderMock.createToken(request.getEmail(), request.getPassword())
@@ -65,7 +64,7 @@ class AccountServiceImplTest extends Specification {
         where:
         exception               |   result
         new AccountRespDto()    |   respDto
-        new AccountErrorDto()   |   errorDto
+        new AccountErrorListDto() |   errorDto
     }
 
     @Unroll
@@ -80,7 +79,7 @@ class AccountServiceImplTest extends Specification {
         def password = "a2asfGfdfdf4"
 
         def respDto = new AccountLoginRespDto()
-        def errorDto = new AccountErrorDto()
+        def errorDto = new AccountErrorListDto()
 
         jwtTokenProviderMock.resolveToken(bearerToken)
         jwtTokenProviderMock.getUsername(token)
@@ -98,7 +97,7 @@ class AccountServiceImplTest extends Specification {
         where:
         exception                   |   result
         new AccountLoginRespDto()   |   respDto
-        new AccountErrorDto()       |   errorDto
+        new AccountErrorListDto() |   errorDto
 
     }
 }

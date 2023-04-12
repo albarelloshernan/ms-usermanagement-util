@@ -5,6 +5,7 @@ import com.microservice.usermanagement.converter.AccountLoginRespEntityConverter
 import com.microservice.usermanagement.converter.AccountRespEntityConverter;
 import com.microservice.usermanagement.dto.req.AccountReqDto;
 import com.microservice.usermanagement.dto.resp.AccountErrorDto;
+import com.microservice.usermanagement.dto.resp.AccountErrorListDto;
 import com.microservice.usermanagement.dto.resp.AccountLoginRespDto;
 import com.microservice.usermanagement.dto.resp.AccountRespDto;
 import com.microservice.usermanagement.exception.CustomException;
@@ -14,7 +15,6 @@ import com.microservice.usermanagement.security.JwtTokenProvider;
 import com.microservice.usermanagement.service.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,11 +38,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public AccountRespDto signUp(AccountReqDto accountReqDto) {
+
         AccountRespDto response;
-        AccountErrorDto errorDto = new AccountErrorDto();
-        JSONObject errorList = new JSONObject();
-        User userEntity = new User();
+        AccountErrorDto accountErrorDto = new AccountErrorDto();
+        AccountErrorListDto errorListDto = new AccountErrorListDto();
+        User userEntity;
         String jwtToken;
+
         if (!accountRepository.existsByUsername(accountReqDto.getName())) {
             jwtToken = jwtTokenProvider.createToken(accountReqDto.getEmail(), accountReqDto.getPassword());
             userEntity = AccountDtoConverter.getInstance().fromDto(accountReqDto);
@@ -51,42 +53,43 @@ public class AccountServiceImpl implements AccountService {
             try {
                 this.accountRepository.save(userEntity);
             } catch (Exception e) {
-                errorDto.setTimestamp(LocalDateTime.now().toString());
-                errorDto.setCodigo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                errorDto.setDetail("Error al insertar datos.");
-                errorList.put("error", errorDto);
-                throw new CustomException(errorList.toJSONString(), HttpStatus.INTERNAL_SERVER_ERROR);
+                accountErrorDto.setTimestamp(LocalDateTime.now().toString());
+                accountErrorDto.setCodigo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                accountErrorDto.setDetail("Error al insertar datos.");
+                errorListDto.setErrorMsg(accountErrorDto);
+                throw new CustomException(errorListDto.getErrorMsg(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        Optional<User> foundUser = accountRepository.findOneByEmail(accountReqDto.getEmail());
-        if (!foundUser.isPresent()) {
-            errorDto.setTimestamp(LocalDateTime.now().toString());
-            errorDto.setCodigo(HttpStatus.NOT_FOUND.value());
-            errorDto.setDetail("User not found.");
-            errorList.put("error", errorDto);
-            throw new CustomException(errorList.toJSONString(), HttpStatus.NOT_FOUND);
+        Optional<User> optionalUser = accountRepository.findOneByEmail(accountReqDto.getEmail());
+        if (!optionalUser.isPresent()) {
+            accountErrorDto.setTimestamp(LocalDateTime.now().toString());
+            accountErrorDto.setCodigo(HttpStatus.NOT_FOUND.value());
+            accountErrorDto.setDetail("User not found.");
+            errorListDto.setErrorMsg(accountErrorDto);
+            throw new CustomException(errorListDto.getErrorMsg(), HttpStatus.NOT_FOUND);
         }
-        response = AccountRespEntityConverter.getInstance().fromEntity(userEntity);
+        response = AccountRespEntityConverter.getInstance().fromEntity(optionalUser.get());
         return response;
     }
 
     @Override
     @Transactional
     public AccountLoginRespDto logIn(String jwtToken, String username, String password) {
+
         AccountLoginRespDto response;
-        AccountErrorDto errorDto = new AccountErrorDto();
-        JSONObject errorList = new JSONObject();
+        AccountErrorDto accountErrorDto = new AccountErrorDto();
+        AccountErrorListDto errorListDto = new AccountErrorListDto();
         String parsedToken = jwtTokenProvider.resolveToken(jwtToken);
         String subject = jwtTokenProvider.getUsername(parsedToken);
+
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (AuthenticationException e) {
-            errorDto.setTimestamp(LocalDateTime.now().toString());
-            errorDto.setCodigo(HttpStatus.UNPROCESSABLE_ENTITY.value());
-            errorDto.setDetail("Wrong username or password.");
-            errorList.put("error", errorDto);
-            throw new CustomException(errorList.toJSONString(), HttpStatus.UNPROCESSABLE_ENTITY);
+            accountErrorDto.setTimestamp(LocalDateTime.now().toString());
+            accountErrorDto.setCodigo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+            accountErrorDto.setDetail("Wrong username or password.");
+            errorListDto.setErrorMsg(accountErrorDto);
+            throw new CustomException(errorListDto.getErrorMsg(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
         Optional<User> optionalUser = accountRepository.findOneByEmail(subject);
         if (optionalUser.isPresent()) {
@@ -95,11 +98,11 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.saveAndFlush(optionalUser.get());
             response = AccountLoginRespEntityConverter.getInstance().fromEntity(optionalUser.get());
         } else {
-            errorDto.setTimestamp(LocalDateTime.now().toString());
-            errorDto.setCodigo(HttpStatus.NOT_FOUND.value());
-            errorDto.setDetail("User not found.");
-            errorList.put("error", errorDto);
-            throw new CustomException(errorList.toJSONString(), HttpStatus.NOT_FOUND);
+            accountErrorDto.setTimestamp(LocalDateTime.now().toString());
+            accountErrorDto.setCodigo(HttpStatus.NOT_FOUND.value());
+            accountErrorDto.setDetail("User not found.");
+            errorListDto.setErrorMsg(accountErrorDto);
+            throw new CustomException(errorListDto.getErrorMsg(), HttpStatus.NOT_FOUND);
         }
         return response;
     }
