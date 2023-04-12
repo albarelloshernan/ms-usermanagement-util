@@ -2,7 +2,6 @@ package com.microservice.usermanagement.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
 
 @Data
 @Entity

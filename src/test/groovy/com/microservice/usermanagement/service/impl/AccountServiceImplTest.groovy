@@ -1,13 +1,10 @@
 package com.microservice.usermanagement.service.impl
 
-import com.microservice.usermanagement.UserManagementApplication
+
 import com.microservice.usermanagement.dto.req.AccountReqDto
 import com.microservice.usermanagement.repository.AccountRepository
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.web.WebAppConfiguration
 import spock.lang.Specification
 import spock.lang.Unroll
 

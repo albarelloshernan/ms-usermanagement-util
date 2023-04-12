@@ -14,16 +14,8 @@ import com.microservice.usermanagement.security.JwtTokenProvider;
 import com.microservice.usermanagement.service.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -48,6 +40,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountRespDto signUp(AccountReqDto accountReqDto) {
         AccountRespDto response;
         AccountErrorDto errorDto = new AccountErrorDto();
+        JSONObject errorList = new JSONObject();
         User userEntity = new User();
         String jwtToken;
         if (!accountRepository.existsByUsername(accountReqDto.getName())) {
@@ -61,7 +54,8 @@ public class AccountServiceImpl implements AccountService {
                 errorDto.setTimestamp(LocalDateTime.now().toString());
                 errorDto.setCodigo(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 errorDto.setDetail("Error al insertar datos.");
-                throw new CustomException(errorDto.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+                errorList.put("error", errorDto);
+                throw new CustomException(errorList.toJSONString(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         Optional<User> foundUser = accountRepository.findOneByEmail(accountReqDto.getEmail());
@@ -69,7 +63,8 @@ public class AccountServiceImpl implements AccountService {
             errorDto.setTimestamp(LocalDateTime.now().toString());
             errorDto.setCodigo(HttpStatus.NOT_FOUND.value());
             errorDto.setDetail("User not found.");
-            throw new CustomException(errorDto.toString(), HttpStatus.NOT_FOUND);
+            errorList.put("error", errorDto);
+            throw new CustomException(errorList.toJSONString(), HttpStatus.NOT_FOUND);
         }
         response = AccountRespEntityConverter.getInstance().fromEntity(userEntity);
         return response;
@@ -80,6 +75,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountLoginRespDto logIn(String jwtToken, String username, String password) {
         AccountLoginRespDto response;
         AccountErrorDto errorDto = new AccountErrorDto();
+        JSONObject errorList = new JSONObject();
         String parsedToken = jwtTokenProvider.resolveToken(jwtToken);
         String subject = jwtTokenProvider.getUsername(parsedToken);
         try {
@@ -89,7 +85,8 @@ public class AccountServiceImpl implements AccountService {
             errorDto.setTimestamp(LocalDateTime.now().toString());
             errorDto.setCodigo(HttpStatus.UNPROCESSABLE_ENTITY.value());
             errorDto.setDetail("Wrong username or password.");
-            throw new CustomException(errorDto.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+            errorList.put("error", errorDto);
+            throw new CustomException(errorList.toJSONString(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
         Optional<User> optionalUser = accountRepository.findOneByEmail(subject);
         if (optionalUser.isPresent()) {
@@ -101,7 +98,8 @@ public class AccountServiceImpl implements AccountService {
             errorDto.setTimestamp(LocalDateTime.now().toString());
             errorDto.setCodigo(HttpStatus.NOT_FOUND.value());
             errorDto.setDetail("User not found.");
-            throw new CustomException(errorDto.toString(), HttpStatus.NOT_FOUND);
+            errorList.put("error", errorDto);
+            throw new CustomException(errorList.toJSONString(), HttpStatus.NOT_FOUND);
         }
         return response;
     }

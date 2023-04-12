@@ -43,7 +43,6 @@ public class User {
     private Date lastLogin;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "PHONES")
     List<Phone> phones;
 
     @Column(name = "IS_ACTIVE")
