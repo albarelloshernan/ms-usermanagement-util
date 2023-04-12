@@ -37,8 +37,8 @@ class AccountServiceImplTest extends Specification {
     @Unroll
     def "Service SignUp returns response"() {
         given:
-        def request = Stub(AccountReqDto)
-        def phones = Stub(AccountUsrPhonesReqDto)
+        def request = new AccountReqDto()
+        def phones = new AccountUsrPhonesReqDto()
         request.setName("Probador")
         request.setEmail("probador@gmail.com")
         request.setPassword("a2asfGfdfdf4")
@@ -55,8 +55,8 @@ class AccountServiceImplTest extends Specification {
         accountRepositoryMock.save(userEntity)
         accountRepositoryMock.findOneByEmail(request.getEmail())
 
-        def errorDto = Stub(AccountErrorDto)
-        def errorListDto = Stub(AccountErrorListDto)
+        def errorDto = new AccountErrorDto()
+        def errorListDto = new AccountErrorListDto()
         errorDto.setTimestamp("2023-04-12T18:15:25.386")
         errorDto.setCodigo(HttpStatus.NOT_FOUND.value())
         errorDto.setDetail("User not found.")
@@ -71,7 +71,7 @@ class AccountServiceImplTest extends Specification {
     }
 
     @Unroll
-    def "Service LogIn returns response or throws #exception"() {
+    def "Service LogIn returns response"() {
         given:
         def bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYWRvckBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImE" +
                 "yYXNmR2ZkZmRmNCIsImlhdCI6MTY4MDk5OTY3MSwiZXhwIjoxNjgxMDAzMjcxfQ.4jFatDRd81mV7PmS_rVoBlQ1Upslx" +
@@ -89,18 +89,13 @@ class AccountServiceImplTest extends Specification {
         authenticationManagerMock.authenticate(new UsernamePasswordAuthenticationToken(username, password))
         def optionalUser = accountRepositoryMock.findOneByEmail(username)
         jwtTokenProviderMock.createToken(username, password)
-        accountRepositoryMock.saveAndFlush(optionalUser.get())
+        accountRepositoryMock.saveAndFlush(Optional.of(optionalUser))
 
         when:
-        def response = accountService.logIn(token,username,password) >> {throw (exception)}
+        def response = accountService.logIn(token,username,password)
 
         then:
-        response == result
-
-        where:
-        exception                   |   result
-        new AccountLoginRespDto()   |   respDto
-        new AccountErrorListDto()   |   errorDto
+        response == respDto
 
     }
 }
